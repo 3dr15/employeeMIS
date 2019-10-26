@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using EmployeeMIS.Models;
 using EmployeeMIS.Services;
 using Microsoft.Extensions.Options;
+using Microsoft.EntityFrameworkCore;
 
 namespace EmployeeMIS
 {
@@ -34,6 +35,9 @@ namespace EmployeeMIS
             sp.GetRequiredService<IOptions<EmployeeDataBaseSettings>>().Value);
             services.AddSingleton<EmployeeService>();
             services.AddControllers();
+
+            services.AddDbContext<EmployeeMISContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("EmployeeMISContext")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
