@@ -13,7 +13,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using PracticeAPI.Models;
 using Microsoft.Extensions.Options;
-using PracticeAPI.Services;
 
 namespace PracticeAPI
 {
@@ -31,15 +30,8 @@ namespace PracticeAPI
         {
             services.AddDbContext<TodoContext>(opt =>
                opt.UseInMemoryDatabase("TodoList"));
-            // requires using Microsoft.Extensions.Options
-            services.Configure<BookstoreDatabaseSettings>(
-                Configuration.GetSection(nameof(BookstoreDatabaseSettings)));
-
-            services.AddSingleton<IBookstoreDatabaseSettings>(sp =>
-                sp.GetRequiredService<IOptions<BookstoreDatabaseSettings>>().Value);
-            services.AddSingleton<BookService>();
-
-            services.AddControllers().AddNewtonsoftJson(options => options.UseMemberCasing());
+                        
+            services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

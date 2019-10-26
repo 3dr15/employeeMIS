@@ -32,12 +32,16 @@ namespace EmployeeMIS
             services.Configure<EmployeeDataBaseSettings>(Configuration.GetSection(nameof(EmployeeDataBaseSettings)));
 
             services.AddSingleton<EmployeeDataBaseSettings>(sp =>
-            sp.GetRequiredService<IOptions<EmployeeDataBaseSettings>>().Value);
+                sp.GetRequiredService<IOptions<EmployeeDataBaseSettings>>().Value);
             services.AddSingleton<EmployeeService>();
+
+            services.AddSingleton<DepartmentService>();
+
+            //services.AddDbContext<DepartmentService>(Configuration.GetSection(nameof(EmployeeDataBaseSettings)));
             services.AddControllers();
 
-            services.AddDbContext<EmployeeMISContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("EmployeeMISContext")));
+           
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
