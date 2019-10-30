@@ -27,8 +27,12 @@ namespace EmployeeMIS
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
+        [Obsolete]
         public void ConfigureServices(IServiceCollection services)
         {
+            // services.AddCors();
+            // services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
             services.Configure<EmployeeDataBaseSettings>(Configuration.GetSection(nameof(EmployeeDataBaseSettings)));
 
             services.AddSingleton<EmployeeDataBaseSettings>(sp =>
@@ -39,9 +43,6 @@ namespace EmployeeMIS
 
             //services.AddDbContext<DepartmentService>(Configuration.GetSection(nameof(EmployeeDataBaseSettings)));
             services.AddControllers();
-
-           
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -62,6 +63,11 @@ namespace EmployeeMIS
             {
                 endpoints.MapControllers();
             });
+
+
+            // app.UseCors(options => options.WithOrigins("https://localhost:44375/api/employee").AllowAnyMethod());
+            // app.UseMvc();
+
         }
     }
 }
