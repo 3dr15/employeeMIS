@@ -29,9 +29,20 @@ namespace PracticeAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<TodoContext>(opt =>
-               opt.UseInMemoryDatabase("TodoList"));
+               opt.UseInMemoryDatabase("Employee_MIS_DB"));
                         
             services.AddControllers();
+
+            /*services.AddDbContext<EmployeeContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("EmployeeContext")));
+
+            services.AddDbContext<DepartmentContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("DepartmentContext")));*/
+
+            services.AddDbContext<DepartmentContext>(options =>
+                    options.UseInMemoryDatabase("Employees"));
+            services.AddDbContext<EmployeeContext>(options =>
+                    options.UseInMemoryDatabase("Department"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
