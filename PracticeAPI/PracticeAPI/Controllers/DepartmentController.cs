@@ -12,11 +12,11 @@ namespace PracticeAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class DepartmentsController : ControllerBase
+    public class DepartmentController : ControllerBase
     {
         private readonly DepartmentContext _context;
 
-        public DepartmentsController(DepartmentContext context)
+        public DepartmentController(DepartmentContext context)
         {
             _context = context;
         }
