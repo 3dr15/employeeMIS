@@ -14,6 +14,8 @@ using EmployeeMIS.Models;
 using EmployeeMIS.Services;
 using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Cors;
+
 
 namespace EmployeeMIS
 {
@@ -30,7 +32,13 @@ namespace EmployeeMIS
         [Obsolete]
         public void ConfigureServices(IServiceCollection services)
         {
-            // services.AddCors();
+            services.AddCors(opt => {
+
+                opt.AddPolicy("AllowMyOrigin",
+
+                builder => builder.AllowAnyOrigin());
+
+            });
             // services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.Configure<EmployeeDataBaseSettings>(Configuration.GetSection(nameof(EmployeeDataBaseSettings)));
@@ -65,7 +73,7 @@ namespace EmployeeMIS
             });
 
 
-            // app.UseCors(options => options.WithOrigins("https://localhost:44375/api/employee").AllowAnyMethod());
+             //app.UseCors(options => options.WithOrigins("http://127.0.0.1:4200").AllowAnyMethod());
             // app.UseMvc();
 
         }

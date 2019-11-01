@@ -14,21 +14,19 @@ namespace PracticeAPI.Controllers
     [ApiController]
     public class DepartmentController : ControllerBase
     {
-        private readonly DepartmentContext _context;
+        private readonly EmployeeMISContext _context;
 
-        public DepartmentController(DepartmentContext context)
+        public DepartmentController(EmployeeMISContext context)
         {
             _context = context;
         }
 
-        // GET: api/Departments
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Department>>> GetDepartment()
         {
             return await _context.Department.ToListAsync();
         }
 
-        // GET: api/Departments/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Department>> GetDepartment(long id)
         {
@@ -42,9 +40,15 @@ namespace PracticeAPI.Controllers
             return department;
         }
 
-        // PUT: api/Departments/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
+        [HttpPost]
+        public async Task<ActionResult<Department>> PostDepartment(Department department)
+        {
+            _context.Department.Add(department);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetDepartment", new { id = department.Id }, department);
+        }
+
         [HttpPut("{id}")]
         public async Task<IActionResult> PutDepartment(long id, Department department)
         {
@@ -74,19 +78,6 @@ namespace PracticeAPI.Controllers
             return NoContent();
         }
 
-        // POST: api/Departments
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
-        [HttpPost]
-        public async Task<ActionResult<Department>> PostDepartment(Department department)
-        {
-            _context.Department.Add(department);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetDepartment", new { id = department.Id }, department);
-        }
-
-        // DELETE: api/Departments/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<Department>> DeleteDepartment(long id)
         {

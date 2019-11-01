@@ -18,31 +18,34 @@ namespace PracticeAPI
 {
     public class Startup
     {
+        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
         public IConfiguration Configuration { get; }
-
+        
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<TodoContext>(opt =>
+            services.AddCors(opt => {
+                opt.AddPolicy(MyAllowSpecificOrigins, builder => 
+                    builder.WithOrigins("http://localhost:4200")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                );
+            });
+             /*services.AddDbContext<TodoContext>(opt =>
                opt.UseInMemoryDatabase("Employee_MIS_DB"));
-                        
-            services.AddControllers();
-
-            /*services.AddDbContext<EmployeeContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("EmployeeContext")));
-
+             */           
+            services.AddDbContext<EmployeeMISContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("EmployeeMISContext")));
+            /*
             services.AddDbContext<DepartmentContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("DepartmentContext")));*/
 
-            services.AddDbContext<DepartmentContext>(options =>
-                    options.UseInMemoryDatabase("Employees"));
-            services.AddDbContext<EmployeeContext>(options =>
-                    options.UseInMemoryDatabase("Department"));
+            services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -52,7 +55,7 @@ namespace PracticeAPI
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            app.UseCors(MyAllowSpecificOrigins);
             app.UseHttpsRedirection();
 
             app.UseRouting();
@@ -63,6 +66,7 @@ namespace PracticeAPI
             {
                 endpoints.MapControllers();
             });
+            
         }
     }
 }

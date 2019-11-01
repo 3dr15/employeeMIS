@@ -7,13 +7,14 @@ using EmployeeMIS.Models;
 
 namespace PracticeAPI.Models
 {
-    public class EmployeeContext : DbContext
+    public class EmployeeMISContext : DbContext
     {
-        public EmployeeContext (DbContextOptions<EmployeeContext> options)
+        public EmployeeMISContext (DbContextOptions<EmployeeMISContext> options)
             : base(options)
         {
         }
-
+        
         public DbSet<EmployeeMIS.Models.Employee> Employee { get; set; }
+        public DbSet<EmployeeMIS.Models.Department> Department { get; set; }
     }
 }
