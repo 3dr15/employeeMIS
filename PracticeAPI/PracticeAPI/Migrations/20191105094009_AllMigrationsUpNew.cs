@@ -2,7 +2,7 @@
 
 namespace PracticeAPI.Migrations
 {
-    public partial class MigrateAll : Migration
+    public partial class AllMigrationsUpNew : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

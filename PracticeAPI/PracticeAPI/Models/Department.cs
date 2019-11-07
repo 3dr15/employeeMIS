@@ -10,5 +10,7 @@ namespace EmployeeMIS.Models
         public long Id { get; set; }
 
         public string DepartmentName { get; set; }
+
+        // public ICollection<Employee> Employees { get; set; }
     }
 }

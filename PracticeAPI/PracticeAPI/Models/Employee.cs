@@ -21,6 +21,7 @@ namespace EmployeeMIS.Models
         
         public string Password { get; set; }
 
+        // public virtual Department Department { get; set; }
         public int DepartmentId { get; set; }
         
         public long Salary { get; set; }

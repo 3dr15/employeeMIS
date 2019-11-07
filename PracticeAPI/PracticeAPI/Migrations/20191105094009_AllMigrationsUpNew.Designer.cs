@@ -9,8 +9,8 @@ using PracticeAPI.Models;
 namespace PracticeAPI.Migrations
 {
     [DbContext(typeof(EmployeeMISContext))]
-    [Migration("20191101141739_MigrateAll")]
-    partial class MigrateAll
+    [Migration("20191105094009_AllMigrationsUpNew")]
+    partial class AllMigrationsUpNew
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
