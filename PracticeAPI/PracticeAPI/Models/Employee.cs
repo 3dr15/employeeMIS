@@ -7,7 +7,7 @@ namespace EmployeeMIS.Models
 {
     public class Employee
     {
-        public long Id { get; set; }
+        public long EmployeeID { get; set; }
 
         public string FirstName { get; set; }
 
@@ -21,8 +21,8 @@ namespace EmployeeMIS.Models
         
         public string Password { get; set; }
 
-        // public virtual Department Department { get; set; }
-        public int DepartmentId { get; set; }
+        public int DepartmentID { get; set; }
+        public Department Department { get; set; }
         
         public long Salary { get; set; }
 

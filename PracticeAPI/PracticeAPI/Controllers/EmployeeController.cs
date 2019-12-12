@@ -40,19 +40,10 @@ namespace PracticeAPI.Controllers
             return employee;
         }
 
-        [HttpPost]
-        public async Task<ActionResult<Employee>> PostEmployee(Employee employee)
-        {
-            _context.Employee.Add(employee);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetEmployee", new { id = employee.Id }, employee);
-        }
-
         [HttpPut("{id}")]
         public async Task<IActionResult> PutEmployee(long id, Employee employee)
         {
-            if (id != employee.Id)
+            if (id != employee.EmployeeID)
             {
                 return BadRequest();
             }
@@ -78,6 +69,15 @@ namespace PracticeAPI.Controllers
             return NoContent();
         }
 
+        [HttpPost]
+        public async Task<ActionResult<Employee>> PostEmployee(Employee employee)
+        {
+            _context.Employee.Add(employee);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetEmployee", new { id = employee.EmployeeID }, employee);
+        }
+
         [HttpDelete("{id}")]
         public async Task<ActionResult<Employee>> DeleteEmployee(long id)
         {
@@ -95,7 +95,7 @@ namespace PracticeAPI.Controllers
 
         private bool EmployeeExists(long id)
         {
-            return _context.Employee.Any(e => e.Id == id);
+            return _context.Employee.Any(e => e.EmployeeID == id);
         }
     }
 }

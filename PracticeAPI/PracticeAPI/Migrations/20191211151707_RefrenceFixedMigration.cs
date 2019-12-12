@@ -2,7 +2,7 @@
 
 namespace PracticeAPI.Migrations
 {
-    public partial class AllMigrationsUpNew : Migration
+    public partial class RefrenceFixedMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -10,20 +10,20 @@ namespace PracticeAPI.Migrations
                 name: "Department",
                 columns: table => new
                 {
-                    Id = table.Column<long>(nullable: false)
+                    DepartmentID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     DepartmentName = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Department", x => x.Id);
+                    table.PrimaryKey("PK_Department", x => x.DepartmentID);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Employee",
                 columns: table => new
                 {
-                    Id = table.Column<long>(nullable: false)
+                    EmployeeID = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     FirstName = table.Column<string>(nullable: true),
                     LastName = table.Column<string>(nullable: true),
@@ -31,22 +31,33 @@ namespace PracticeAPI.Migrations
                     DocProofLink = table.Column<string>(nullable: true),
                     Email = table.Column<string>(nullable: true),
                     Password = table.Column<string>(nullable: true),
-                    DepartmentId = table.Column<int>(nullable: false),
+                    DepartmentID = table.Column<int>(nullable: false),
                     Salary = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Employee", x => x.Id);
+                    table.PrimaryKey("PK_Employee", x => x.EmployeeID);
+                    table.ForeignKey(
+                        name: "FK_Employee_Department_DepartmentID",
+                        column: x => x.DepartmentID,
+                        principalTable: "Department",
+                        principalColumn: "DepartmentID",
+                        onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Employee_DepartmentID",
+                table: "Employee",
+                column: "DepartmentID");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Department");
+                name: "Employee");
 
             migrationBuilder.DropTable(
-                name: "Employee");
+                name: "Department");
         }
     }
 }

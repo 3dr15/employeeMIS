@@ -7,10 +7,10 @@ namespace EmployeeMIS.Models
 {
     public class Department
     {
-        public long Id { get; set; }
+        public int DepartmentID { get; set; }
 
         public string DepartmentName { get; set; }
 
-        // public ICollection<Employee> Employees { get; set; }
+        public List<Employee> Employees { get; set; }
     }
 }

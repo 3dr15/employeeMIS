@@ -20,27 +20,27 @@ namespace PracticeAPI.Migrations
 
             modelBuilder.Entity("EmployeeMIS.Models.Department", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("DepartmentID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("DepartmentName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("DepartmentID");
 
                     b.ToTable("Department");
                 });
 
             modelBuilder.Entity("EmployeeMIS.Models.Employee", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<long>("EmployeeID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("DepartmentId")
+                    b.Property<int>("DepartmentID")
                         .HasColumnType("int");
 
                     b.Property<string>("DocProofLink")
@@ -64,9 +64,20 @@ namespace PracticeAPI.Migrations
                     b.Property<long>("Salary")
                         .HasColumnType("bigint");
 
-                    b.HasKey("Id");
+                    b.HasKey("EmployeeID");
+
+                    b.HasIndex("DepartmentID");
 
                     b.ToTable("Employee");
+                });
+
+            modelBuilder.Entity("EmployeeMIS.Models.Employee", b =>
+                {
+                    b.HasOne("EmployeeMIS.Models.Department", "Department")
+                        .WithMany("Employees")
+                        .HasForeignKey("DepartmentID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
