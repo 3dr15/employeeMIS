@@ -30,7 +30,9 @@ namespace PracticeAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Department>> GetDepartment(int id)
         {
-            var department = await _context.Department.FindAsync(id);
+            /*var department = await _context.Department.FindAsync(id);*/
+            var department = await _context.Department.Include(department => department.Employees)
+                .FirstOrDefaultAsync(department => department.DepartmentID == id);
 
             if (department == null)
             {
