@@ -31,11 +31,12 @@ namespace PracticeAPI
         {
             // To allow Cors
             services.AddCors(opt => {
-                opt.AddPolicy(MyAllowSpecificOrigins, builder => 
+                opt.AddPolicy(MyAllowSpecificOrigins, builder =>
                     builder.WithOrigins("http://localhost:4200")
                         .AllowAnyHeader()
                         .AllowAnyMethod()
-                );
+                        .AllowAnyOrigin()
+                ); ;
             });
              /*services.AddDbContext<TodoContext>(opt =>
                opt.UseInMemoryDatabase("Employee_MIS_DB"));
@@ -66,6 +67,7 @@ namespace PracticeAPI
                 app.UseDeveloperExceptionPage();
             }
             app.UseCors(MyAllowSpecificOrigins);
+
             app.UseHttpsRedirection();
 
             app.UseRouting();

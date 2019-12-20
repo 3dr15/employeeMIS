@@ -24,42 +24,42 @@ namespace PracticeAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Employee>>> GetEmployee()
+        public ActionResult<IEnumerable<Employee>> GetEmployee()
         {
             //return await _context.Employee.ToListAsync();
-            return await _context.Employee.Include(employee => employee.Department).ToListAsync();
+            return _context.Employee.Include(employee => employee.Department).ToListAsync().Result;
             //return await _context.Employee.Include(employee => employee.Department).ToListAsync().ConfigureAwait(true);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Employee>> GetEmployee(long id)
+        public IActionResult GetEmployee(long id)
         {
             /*var employee = await _context.Employee.FindAsync(id);*/
-            var employee = await _context.Employee.Include(employee => employee.Department)
+            var employee = _context.Employee.Include(employee => employee.Department)
                 .FirstOrDefaultAsync(employee => employee.EmployeeID == id);
-
 
             if (employee == null)
             {
                 return NotFound();
             }
 
-            return employee;
+            return Ok(employee);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutEmployee(long id, Employee employee)
+        public IActionResult PutEmployee(long id, Employee employee)
         {
             if (id != employee.EmployeeID)
             {
                 return BadRequest();
             }
 
+            employee.DocProofLink = this.FileUpload(employee.DocProofLink);
             _context.Entry(employee).State = EntityState.Modified;
 
             try
             {
-                await _context.SaveChangesAsync();
+                _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -73,36 +73,31 @@ namespace PracticeAPI.Controllers
                 }
             }
 
-            return NoContent();
+            // return NoContent();
+            return Ok(employee);
         }
 
         [HttpPost]
-        public async Task<ActionResult<Employee>> PostEmployee(Employee employee)
+        public ActionResult<Employee> PostEmployee(Employee employee)
         {
-            // string storage = Environment.CurrentDirectory;
-            string storage = AppDomain.CurrentDomain.BaseDirectory + "\\Document_Storage";
-            Guid docName = Guid.NewGuid();
-            
-            System.IO.File.WriteAllBytes(storage + "\\" + docName +".jpg", Convert.FromBase64String(employee.DocProofLink));
-
-            employee.DocProofLink = storage + "..\\" + docName + ".jpg";
+            employee.DocProofLink = this.FileUpload(employee.DocProofLink);
             _context.Employee.Add(employee);
-            await _context.SaveChangesAsync();
+            _context.SaveChangesAsync();
 
             return CreatedAtAction("GetEmployee", new { id = employee.EmployeeID }, employee);
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Employee>> DeleteEmployee(long id)
+        public ActionResult<Employee> DeleteEmployee(long id)
         {
-            var employee = await _context.Employee.FindAsync(id);
+            var employee = _context.Employee.FindAsync(id).Result;
             if (employee == null)
             {
                 return NotFound();
             }
 
             _context.Employee.Remove(employee);
-            await _context.SaveChangesAsync();
+            _context.SaveChangesAsync();
 
             return employee;
         }
@@ -112,9 +107,16 @@ namespace PracticeAPI.Controllers
             return _context.Employee.Any(e => e.EmployeeID == id);
         }
 
-        static void FileUpload(byte[] bytes)
+        private string FileUpload(string base64_file_string)
         {
+            // string storage = Environment.CurrentDirectory;
+            string storage = AppDomain.CurrentDomain.BaseDirectory + "\\Document_Storage";
+
             
+            Guid docName = Guid.NewGuid();
+
+            System.IO.File.WriteAllBytes(storage + "\\" + docName + ".jpg", Convert.FromBase64String(base64_file_string));
+            return storage + "\\" + docName + ".jpg";
         }
     }
 }

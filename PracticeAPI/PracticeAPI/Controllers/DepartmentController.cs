@@ -22,16 +22,16 @@ namespace PracticeAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Department>>> GetDepartment()
+        public ActionResult<IEnumerable<Department>> GetDepartment()
         {
-            return await _context.Department.ToListAsync();
+            return _context.Department.ToListAsync().Result;
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Department>> GetDepartment(int id)
+        public IActionResult GetDepartment(int id)
         {
             /*var department = await _context.Department.FindAsync(id);*/
-            var department = await _context.Department.Include(department => department.Employees)
+            var department = _context.Department.Include(department => department.Employees)
                 .FirstOrDefaultAsync(department => department.DepartmentID == id);
 
             if (department == null)
@@ -39,11 +39,11 @@ namespace PracticeAPI.Controllers
                 return NotFound();
             }
 
-            return department;
+            return Ok(department);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutDepartment(int id, Department department)
+        public IActionResult PutDepartment(int id, Department department)
         {
             if (id != department.DepartmentID)
             {
@@ -54,7 +54,7 @@ namespace PracticeAPI.Controllers
 
             try
             {
-                await _context.SaveChangesAsync();
+                _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -68,29 +68,30 @@ namespace PracticeAPI.Controllers
                 }
             }
 
-            return NoContent();
+            // return NoContent();
+            return Ok(department);
         }
 
         [HttpPost]
-        public async Task<ActionResult<Department>> PostDepartment(Department department)
+        public ActionResult<Department> PostDepartment(Department department)
         {
             _context.Department.Add(department);
-            await _context.SaveChangesAsync();
+            _context.SaveChangesAsync();
 
             return CreatedAtAction("GetDepartment", new { id = department.DepartmentID }, department);
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Department>> DeleteDepartment(int id)
+        public ActionResult<Department> DeleteDepartment(int id)
         {
-            var department = await _context.Department.FindAsync(id);
+            var department = _context.Department.FindAsync(id).Result;
             if (department == null)
             {
                 return NotFound();
             }
 
             _context.Department.Remove(department);
-            await _context.SaveChangesAsync();
+            _context.SaveChangesAsync();
 
             return department;
         }
