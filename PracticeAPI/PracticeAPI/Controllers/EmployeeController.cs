@@ -9,9 +9,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using EmployeeMIS.Models;
 using PracticeAPI.Models;
+using Microsoft.AspNetCore.Cors;
 
 namespace PracticeAPI.Controllers
 {
+    // [EnableCors("_myAllowSpecificOrigins")]
     [Route("api/[controller]")]
     [ApiController]
     public class EmployeeController : ControllerBase
@@ -36,7 +38,7 @@ namespace PracticeAPI.Controllers
         {
             /*var employee = await _context.Employee.FindAsync(id);*/
             var employee = _context.Employee.Include(employee => employee.Department)
-                .FirstOrDefaultAsync(employee => employee.EmployeeID == id);
+                .FirstOrDefaultAsync(employee => employee.EmployeeID == id).Result;
 
             if (employee == null)
             {
@@ -44,6 +46,28 @@ namespace PracticeAPI.Controllers
             }
 
             return Ok(employee);
+        }
+
+        [HttpGet("search/{searchString}")]
+        public ActionResult GetAnEmployee(string searchString)
+        {
+            var emp = from employees in _context.Employee.Include(employee => employee.Department) select employees;
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                var employees = emp.Where(e => e.FirstName.Contains(searchString) || e.LastName.Contains(searchString));
+
+                if (!employees.Any())
+                {
+                    return NotFound();
+                }
+
+                return Ok(value: employees.ToList());
+            }
+            else
+            {
+                return NotFound();
+            }
         }
 
         [HttpPut("{id}")]

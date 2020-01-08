@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PracticeAPI.Models;
 using PracticeAPI.Classes;
+using Microsoft.AspNetCore.Cors;
 
 namespace PracticeAPI.Controllers
 {
+    // [EnableCors("_myAllowSpecificOrigins")]
     [Route("api/[controller]")]
     [ApiController]
     public class EmployeeDocumentController : ControllerBase

@@ -30,17 +30,34 @@ namespace PracticeAPI
         public void ConfigureServices(IServiceCollection services)
         {
             // To allow Cors
-            services.AddCors(opt => {
+            services.AddCors(opt =>
+            {
                 opt.AddPolicy(MyAllowSpecificOrigins, builder =>
-                    builder.WithOrigins("http://localhost:4200")
+                    builder.AllowAnyOrigin()
                         .AllowAnyHeader()
                         .AllowAnyMethod()
-                        .AllowAnyOrigin()
-                ); ;
+                );
             });
-             /*services.AddDbContext<TodoContext>(opt =>
-               opt.UseInMemoryDatabase("Employee_MIS_DB"));
-             */           
+
+            /* services.AddCors(Cors => {
+                 Cors.AddPolicy(MyAllowSpecificOrigins, opt => opt.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+             });*/
+
+            /*services.AddCors(Options =>
+            {
+                Options.AddPolicy(MyAllowSpecificOrigins, builder => 
+                builder.WithOrigins("http://localhost:4200/",
+                    "http://localhost:4230/",
+                    "https://api.employeemis.com/EmpApp/",
+                    "http://{public IP}:{public port}/",
+                    "http://{public DNS name}:{public port}/")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod());
+            });*/
+
+            /*services.AddDbContext<TodoContext>(opt =>
+              opt.UseInMemoryDatabase("Employee_MIS_DB"));
+            */
             services.AddDbContext<EmployeeMISContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("EmployeeMISContext")));
 
@@ -66,8 +83,9 @@ namespace PracticeAPI
             {
                 app.UseDeveloperExceptionPage();
             }
-            app.UseCors(MyAllowSpecificOrigins);
 
+             app.UseCors();
+            // app.UseCors(MyAllowSpecificOrigins);
             app.UseHttpsRedirection();
 
             app.UseRouting();

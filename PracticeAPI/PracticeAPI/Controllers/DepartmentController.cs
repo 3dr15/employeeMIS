@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using EmployeeMIS.Models;
 using PracticeAPI.Models;
+using Microsoft.AspNetCore.Cors;
 
 namespace PracticeAPI.Controllers
 {
+    // [EnableCors("_myAllowSpecificOrigins")]
     [Route("api/[controller]")]
     [ApiController]
     public class DepartmentController : ControllerBase
@@ -21,6 +23,7 @@ namespace PracticeAPI.Controllers
             _context = context;
         }
 
+        
         [HttpGet]
         public ActionResult<IEnumerable<Department>> GetDepartment()
         {
@@ -28,11 +31,12 @@ namespace PracticeAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetDepartment(int id)
+        public ActionResult GetDepartment(int id)
         {
             /*var department = await _context.Department.FindAsync(id);*/
-            var department = _context.Department.Include(department => department.Employees)
-                .FirstOrDefaultAsync(department => department.DepartmentID == id);
+            var department = _context.Department.Find(id);
+            var departmentT = _context.Department.Include(department => department.Employees)
+                .FirstOrDefault(department => department.DepartmentID == id);
 
             if (department == null)
             {
