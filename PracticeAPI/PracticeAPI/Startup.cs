@@ -84,8 +84,8 @@ namespace PracticeAPI
                 app.UseDeveloperExceptionPage();
             }
 
-             app.UseCors();
-            // app.UseCors(MyAllowSpecificOrigins);
+            // app.UseCors();
+            app.UseCors(MyAllowSpecificOrigins);
             app.UseHttpsRedirection();
 
             app.UseRouting();

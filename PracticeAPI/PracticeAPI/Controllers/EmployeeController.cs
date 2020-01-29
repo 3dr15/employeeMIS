@@ -26,11 +26,22 @@ namespace PracticeAPI.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Employee>> GetEmployee()
+        public ActionResult<IEnumerable<Employee>> GetEmployee([FromQuery]Pagination pagination)
         {
             //return await _context.Employee.ToListAsync();
-            return _context.Employee.Include(employee => employee.Department).ToListAsync().Result;
             //return await _context.Employee.Include(employee => employee.Department).ToListAsync().ConfigureAwait(true);
+
+            // Working 
+            // return _context.Employee.Include(employee => employee.Department).ToListAsync().Result;
+            
+            // var employees = from emp in _context.Employee select emp;
+
+            var employees = _context.Employee.Include(employee => employee.Department)
+                .Skip((pagination.PageNumber - 1) * pagination.PageSize)
+                .Take(pagination.PageSize)
+                .ToListAsync().Result;
+
+            return Ok(employees);
         }
 
         [HttpGet("{id}")]
@@ -70,6 +81,17 @@ namespace PracticeAPI.Controllers
             }
         }
 
+        [HttpGet("count")]
+        public int GetEmployeesPerPageCount()
+        {
+            int count = _context.Employee.ToList().Count();
+            double numberOfPages = count / 10.0;
+
+            return (int)Math.Round(numberOfPages, 0, MidpointRounding.AwayFromZero);
+
+            // return ((int)Math.Ceiling(numberOfPages));
+        }
+
         [HttpPut("{id}")]
         public IActionResult PutEmployee(long id, Employee employee)
         {
@@ -80,7 +102,6 @@ namespace PracticeAPI.Controllers
 
             employee.DocProofLink = this.FileUpload(employee.DocProofLink);
             _context.Entry(employee).State = EntityState.Modified;
-
             try
             {
                 _context.SaveChangesAsync();
