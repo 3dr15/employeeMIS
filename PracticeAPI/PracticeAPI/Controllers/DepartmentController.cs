@@ -11,8 +11,8 @@ using Microsoft.AspNetCore.Cors;
 
 namespace PracticeAPI.Controllers
 {
-    // [EnableCors("_myAllowSpecificOrigins")]
     [Route("api/[controller]")]
+    [EnableCorsAttribute("_myAllowSpecificOrigins")]
     [ApiController]
     public class DepartmentController : ControllerBase
     {
@@ -74,6 +74,28 @@ namespace PracticeAPI.Controllers
 
             // return NoContent();
             return Ok(department);
+        }
+
+        [HttpGet("search/{searchString}")]
+        public ActionResult SearchDepartments(string searchString)
+        {
+            var departments = from dep in _context.Department.Include(dep => dep.Employees) select dep;
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                var department = departments.Where(department => department.DepartmentName.Contains(searchString));
+
+                if (!department.Any())
+                {
+                    return NotFound();
+                }
+
+                return Ok(department.ToList());
+            }
+            else
+            {
+                return NotFound();
+            }
         }
 
         [HttpPost]

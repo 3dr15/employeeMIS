@@ -12,7 +12,9 @@ using Microsoft.AspNetCore.Cors;
 namespace PracticeAPI.Controllers
 {
     // [EnableCors("_myAllowSpecificOrigins")]
+    // [EnableCors(origins: "*", headers: "*", methods: "*")]
     [Route("api/[controller]")]
+    [EnableCorsAttribute("_myAllowSpecificOrigins")]
     [ApiController]
     public class EmployeeDocumentController : ControllerBase
     {
@@ -33,7 +35,6 @@ namespace PracticeAPI.Controllers
                 return NotFound();
             }
             byte[] bytes = System.IO.File.ReadAllBytes(employee.DocProofLink);
-                        
             return File(bytes,"image/jpg");
         }
     }

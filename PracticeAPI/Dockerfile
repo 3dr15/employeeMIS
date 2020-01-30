@@ -3,16 +3,16 @@ WORKDIR /app
 
 # copy csproj and restore as distinct layers
 COPY *.sln .
-COPY aspnetapp/*.csproj ./aspnetapp/
+COPY PracticeAPI/*.csproj ./PracticeAPI/
 RUN dotnet restore
 
 # copy everything else and build app
-COPY aspnetapp/. ./aspnetapp/
-WORKDIR /app/aspnetapp
+COPY PracticeAPI/. ./PracticeAPI/
+WORKDIR /app/PracticeAPI
 RUN dotnet publish -c Release -o out
 
 
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.0 AS runtime
 WORKDIR /app
-COPY --from=build /app/aspnetapp/out ./
-ENTRYPOINT ["dotnet", "aspnetapp.dll"]
+COPY --from=build /app/PracticeAPI/out ./
+ENTRYPOINT ["dotnet", "PracticeAPI.dll"]

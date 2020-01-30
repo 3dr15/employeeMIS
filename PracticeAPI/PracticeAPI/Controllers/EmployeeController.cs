@@ -13,8 +13,8 @@ using Microsoft.AspNetCore.Cors;
 
 namespace PracticeAPI.Controllers
 {
-    // [EnableCors("_myAllowSpecificOrigins")]
     [Route("api/[controller]")]
+    [EnableCorsAttribute("_myAllowSpecificOrigins")]
     [ApiController]
     public class EmployeeController : ControllerBase
     {
@@ -25,6 +25,7 @@ namespace PracticeAPI.Controllers
             _context = context;
         }
 
+        [EnableCorsAttribute("_myAllowSpecificOrigins")]
         [HttpGet]
         public ActionResult<IEnumerable<Employee>> GetEmployee([FromQuery]Pagination pagination)
         {
@@ -73,7 +74,7 @@ namespace PracticeAPI.Controllers
                     return NotFound();
                 }
 
-                return Ok(value: employees.ToList());
+                return Ok(employees.ToList());
             }
             else
             {

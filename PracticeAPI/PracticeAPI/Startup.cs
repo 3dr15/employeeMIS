@@ -39,27 +39,28 @@ namespace PracticeAPI
                 );
             });
 
-            /* services.AddCors(Cors => {
-                 Cors.AddPolicy(MyAllowSpecificOrigins, opt => opt.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
-             });*/
-
-            /*services.AddCors(Options =>
+            /*
+            if(Configuration["Server"] == null)
             {
-                Options.AddPolicy(MyAllowSpecificOrigins, builder => 
-                builder.WithOrigins("http://localhost:4200/",
-                    "http://localhost:4230/",
-                    "https://api.employeemis.com/EmpApp/",
-                    "http://{public IP}:{public port}/",
-                    "http://{public DNS name}:{public port}/")
-                    .AllowAnyHeader()
-                    .AllowAnyMethod());
-            });*/
+                services.AddDbContext<EmployeeMISContext>(options =>
+                        options.UseSqlServer(Configuration.GetConnectionString("EmployeeMISContext")));
+            }
+            else
+            {
+                var server = Configuration["DBServer"];
+                var port = Configuration["DBPort"];
+                var user = Configuration["DBUser"];
+                var password = Configuration["DBPassword"];
+                var database = Configuration["Database"];
 
-            /*services.AddDbContext<TodoContext>(opt =>
-              opt.UseInMemoryDatabase("Employee_MIS_DB"));
+                services.AddDbContext<EmployeeMISContext>(options =>
+                        options.UseSqlServer($"Server={server},{port};Initial Catalog={database}; User ID={user};Password={password}"));
+            }
             */
+
             services.AddDbContext<EmployeeMISContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("EmployeeMISContext")));
+                        options.UseSqlServer(Configuration.GetConnectionString("EmployeeMISContext")));    // Uncomment Me
+
 
             //services.AddControllers();
             /*
@@ -84,11 +85,13 @@ namespace PracticeAPI
                 app.UseDeveloperExceptionPage();
             }
 
-            // app.UseCors();
-            app.UseCors(MyAllowSpecificOrigins);
+            
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            // app.UseCors(MyAllowSpecificOrigins);
+            app.UseCors(options => options.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()); // This should be called only after useRouting() and before UseAuthentication()
 
             app.UseAuthorization();
 
@@ -96,7 +99,8 @@ namespace PracticeAPI
             {
                 endpoints.MapControllers();
             });
-            
+
+            // PrepDB.PrepPopulation(app); // Comment This
         }
     }
 }
