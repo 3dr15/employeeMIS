@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using PracticeAPI.Models;
 
-namespace PracticeAPI.Models
+namespace PracticeAPI.DLL.Data
 {
     public class EmployeeMISContext : DbContext
     {
@@ -14,7 +13,7 @@ namespace PracticeAPI.Models
         {
         }
         
-        public DbSet<PracticeAPI.Models.Employee> Employee { get; set; }
-        public DbSet<PracticeAPI.Models.Department> Department { get; set; }
+        public DbSet<PracticeAPI.DLL.Models.Employee> Employee { get; set; }
+        public DbSet<PracticeAPI.DLL.Models.Department> Department { get; set; }
     }
 }

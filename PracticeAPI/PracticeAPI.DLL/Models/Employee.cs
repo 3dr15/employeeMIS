@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace PracticeAPI.Models
+namespace PracticeAPI.DLL.Models
 {
     public class Employee
     {

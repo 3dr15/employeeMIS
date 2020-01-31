@@ -29,15 +29,7 @@ namespace PracticeAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // To allow Cors
-            services.AddCors(opt =>
-            {
-                opt.AddPolicy(MyAllowSpecificOrigins, builder =>
-                    builder.AllowAnyOrigin()
-                        .AllowAnyHeader()
-                        .AllowAnyMethod()
-                );
-            });
+            // To allow Cors          
 
             /*
             if(Configuration["Server"] == null)
@@ -62,7 +54,7 @@ namespace PracticeAPI
                         options.UseSqlServer(Configuration.GetConnectionString("EmployeeMISContext")));    // Uncomment Me
 
 
-            //services.AddControllers();
+            services.AddControllers();
             /*
              To solve Object cycle in JSON refered this link
              https://github.com/dotnet/corefx/issues/41288#issuecomment-534648397
@@ -74,6 +66,15 @@ namespace PracticeAPI
              https://stackoverflow.com/questions/57912012/net-core-3-upgrade-cors-and-jsoncycle-xmlhttprequest-error
              */
             services.AddControllers().AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+
+            services.AddCors(opt =>
+            {
+                opt.AddPolicy(MyAllowSpecificOrigins, builder =>
+                    builder.WithOrigins("http://localhost:4200", "http://localhost:8888")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                );
+            });
 
         }
 
@@ -90,14 +91,14 @@ namespace PracticeAPI
 
             app.UseRouting();
 
-            // app.UseCors(MyAllowSpecificOrigins);
-            app.UseCors(options => options.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()); // This should be called only after useRouting() and before UseAuthentication()
+            app.UseCors(MyAllowSpecificOrigins); // This should be called only after useRouting() and before UseAuthentication()
 
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+                endpoints.MapControllers().RequireCors(MyAllowSpecificOrigins);
+                // endpoints.MapControllers();
             });
 
             // PrepDB.PrepPopulation(app); // Comment This

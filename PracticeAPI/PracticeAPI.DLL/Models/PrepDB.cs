@@ -5,8 +5,9 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
+using PracticeAPI.DLL.Data;
 
-namespace PracticeAPI.Models
+namespace PracticeAPI.DLL
 {
     public class PrepDB
     {
@@ -29,11 +30,11 @@ namespace PracticeAPI.Models
                 System.Console.WriteLine("Seeding Data.......");
 
                 context.Department.AddRange(
-                    new PracticeAPI.Models.Department() { DepartmentName = "Administrator" },
-                    new PracticeAPI.Models.Department() { DepartmentName = "Management" },
-                    new PracticeAPI.Models.Department() { DepartmentName = "Development" },
-                    new PracticeAPI.Models.Department() { DepartmentName = "Designing" },
-                    new PracticeAPI.Models.Department() { DepartmentName = "Testing" }
+                    new PracticeAPI.DLL.Models.Department() { DepartmentName = "Administrator" },
+                    new PracticeAPI.DLL.Models.Department() { DepartmentName = "Management" },
+                    new PracticeAPI.DLL.Models.Department() { DepartmentName = "Development" },
+                    new PracticeAPI.DLL.Models.Department() { DepartmentName = "Designing" },
+                    new PracticeAPI.DLL.Models.Department() { DepartmentName = "Testing" }
                 );
 
             }
