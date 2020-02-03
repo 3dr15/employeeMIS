@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using PracticeAPI.Models;
+using PracticeAPI.DLL.Classes;
+using PracticeAPI.DLL.Data;
 using Microsoft.AspNetCore.Cors;
+using PracticeAPI.DLL.Interfaces;
 
 namespace PracticeAPI.Controllers
 {
@@ -13,16 +15,16 @@ namespace PracticeAPI.Controllers
     [ApiController]
     public class EmployeeController : ControllerBase
     {
-        private readonly EmployeeMISContext _context;
+        private readonly IEmployeeRepository _employeeRepository;
 
-        public EmployeeController(EmployeeMISContext context)
+        public EmployeeController(IEmployeeRepository employeeRepository)
         {
-            _context = context;
+            _employeeRepository = employeeRepository;
         }
 
         [EnableCorsAttribute("_myAllowSpecificOrigins")]
         [HttpGet]
-        public ActionResult<IEnumerable<Employee>> GetEmployee([FromQuery]Pagination pagination)
+        public ActionResult<IEnumerable<EmployeeView>> GetEmployee([FromQuery]Pagination pagination)
         {
             //return await _context.Employee.ToListAsync();
             //return await _context.Employee.Include(employee => employee.Department).ToListAsync().ConfigureAwait(true);
@@ -32,11 +34,7 @@ namespace PracticeAPI.Controllers
             
             // var employees = from emp in _context.Employee select emp;
 
-            var employees = _context.Employee.Include(employee => employee.Department)
-                .Skip((pagination.PageNumber - 1) * pagination.PageSize)
-                .Take(pagination.PageSize)
-                .ToListAsync().Result;
-
+            var employees = _employeeRepository.GetEmployees(pagination);
             return Ok(employees);
         }
 
@@ -44,8 +42,7 @@ namespace PracticeAPI.Controllers
         public IActionResult GetEmployee(long id)
         {
             /*var employee = await _context.Employee.FindAsync(id);*/
-            var employee = _context.Employee.Include(employee => employee.Department)
-                .FirstOrDefaultAsync(employee => employee.EmployeeID == id).Result;
+            var employee = _employeeRepository.GetEmployee(id);
 
             if (employee == null)
             {
@@ -58,13 +55,11 @@ namespace PracticeAPI.Controllers
         [HttpGet("search/{searchString}")]
         public ActionResult GetAnEmployee(string searchString)
         {
-            var emp = from employees in _context.Employee.Include(employee => employee.Department) select employees;
-
             if (!string.IsNullOrEmpty(searchString))
             {
-                var employees = emp.Where(e => e.FirstName.Contains(searchString) || e.LastName.Contains(searchString));
+                var employees = _employeeRepository.FindEmployees(searchString);
 
-                if (!employees.Any())
+                if (employees == null)
                 {
                     return NotFound();
                 }
@@ -80,84 +75,39 @@ namespace PracticeAPI.Controllers
         [HttpGet("count")]
         public int GetEmployeesPerPageCount()
         {
-            int count = _context.Employee.ToList().Count();
-            double numberOfPages = count / 10.0;
-
-            return (int)Math.Round(numberOfPages, 0, MidpointRounding.AwayFromZero);
-
-            // return ((int)Math.Ceiling(numberOfPages));
+            return _employeeRepository.GetEmployeeCount();
         }
 
         [HttpPut("{id}")]
-        public IActionResult PutEmployee(long id, Employee employee)
+        public IActionResult PutEmployee(long id, EmployeeView employee)
         {
             if (id != employee.EmployeeID)
             {
                 return BadRequest();
             }
 
-            employee.DocProofLink = this.FileUpload(employee.DocProofLink);
-            _context.Entry(employee).State = EntityState.Modified;
-            try
-            {
-                _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!EmployeeExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            var updatedEmployee = _employeeRepository.UpdateEmployee(id, employee);
 
-            // return NoContent();
-            return Ok(employee);
+            return Ok(updatedEmployee);
         }
 
         [HttpPost]
-        public ActionResult<Employee> PostEmployee(Employee employee)
+        public ActionResult<EmployeeView> PostEmployee(EmployeeView employee)
         {
-            employee.DocProofLink = this.FileUpload(employee.DocProofLink);
-            _context.Employee.Add(employee);
-            _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetEmployee", new { id = employee.EmployeeID }, employee);
+            var newEmployee = _employeeRepository.CreateEmployee(employee);
+            if(newEmployee == null)
+            {
+                return NoContent();
+            }
+            return CreatedAtAction("GetEmployee", new { id = newEmployee.EmployeeID }, newEmployee);
         }
 
         [HttpDelete("{id}")]
-        public ActionResult<Employee> DeleteEmployee(long id)
+        public ActionResult<EmployeeView> DeleteEmployee(long id)
         {
-            var employee = _context.Employee.FindAsync(id).Result;
-            if (employee == null)
-            {
-                return NotFound();
-            }
+            var employee = _employeeRepository.DeleteEmployee(id);
 
-            _context.Employee.Remove(employee);
-            _context.SaveChangesAsync();
-
-            return employee;
-        }
-
-        private bool EmployeeExists(long id)
-        {
-            return _context.Employee.Any(e => e.EmployeeID == id);
-        }
-
-        private string FileUpload(string base64_file_string)
-        {
-            // string storage = Environment.CurrentDirectory;
-            string storage = AppDomain.CurrentDomain.BaseDirectory + "\\Document_Storage";
-
-            
-            Guid docName = Guid.NewGuid();
-
-            System.IO.File.WriteAllBytes(storage + "\\" + docName + ".jpg", Convert.FromBase64String(base64_file_string));
-            return storage + "\\" + docName + ".jpg";
+            return Ok(employee);
         }
     }
 }

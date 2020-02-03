@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace PracticeAPI.Models
+namespace PracticeAPI.DLL.Classes
 {
-    public class Employee
+    public class EmployeeView
     {
         public long EmployeeID { get; set; }
 
@@ -14,17 +14,16 @@ namespace PracticeAPI.Models
         public string LastName { get; set; }
 
         public long PhoneNumber { get; set; }
-        
+
         public string DocProofLink { get; set; }
-        
+
         public string Email { get; set; }
-        
+
         public string Password { get; set; }
 
         public int DepartmentID { get; set; }
-        public Department Department { get; set; }
-        
-        public long Salary { get; set; }
+        public DepartmentView Department { get; set; }
 
+        public long Salary { get; set; }
     }
 }

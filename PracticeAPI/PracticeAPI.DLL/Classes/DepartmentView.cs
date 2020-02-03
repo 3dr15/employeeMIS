@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace PracticeAPI.Models
+namespace PracticeAPI.DLL.Classes
 {
-    public class Department
+    public class DepartmentView
     {
         public int DepartmentID { get; set; }
 
         public string DepartmentName { get; set; }
 
-        public List<Employee> Employees { get; set; }
+        public List<EmployeeView> Employees { get; set; }
+
     }
 }

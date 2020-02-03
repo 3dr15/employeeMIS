@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using PracticeAPI.Models;
+using PracticeAPI.DLL.Data;
 
-namespace PracticeAPI.Migrations
+namespace PracticeAPI.DLL.Migrations
 {
     [DbContext(typeof(EmployeeMISContext))]
     partial class EmployeeMISContextModelSnapshot : ModelSnapshot
@@ -14,11 +14,11 @@ namespace PracticeAPI.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.0.0")
+                .HasAnnotation("ProductVersion", "3.1.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("EmployeeMIS.Models.Department", b =>
+            modelBuilder.Entity("PracticeAPI.DLL.Models.Department", b =>
                 {
                     b.Property<int>("DepartmentID")
                         .ValueGeneratedOnAdd()
@@ -33,7 +33,7 @@ namespace PracticeAPI.Migrations
                     b.ToTable("Department");
                 });
 
-            modelBuilder.Entity("EmployeeMIS.Models.Employee", b =>
+            modelBuilder.Entity("PracticeAPI.DLL.Models.Employee", b =>
                 {
                     b.Property<long>("EmployeeID")
                         .ValueGeneratedOnAdd()
@@ -71,9 +71,9 @@ namespace PracticeAPI.Migrations
                     b.ToTable("Employee");
                 });
 
-            modelBuilder.Entity("EmployeeMIS.Models.Employee", b =>
+            modelBuilder.Entity("PracticeAPI.DLL.Models.Employee", b =>
                 {
-                    b.HasOne("EmployeeMIS.Models.Department", "Department")
+                    b.HasOne("PracticeAPI.DLL.Models.Department", "Department")
                         .WithMany("Employees")
                         .HasForeignKey("DepartmentID")
                         .OnDelete(DeleteBehavior.Cascade)

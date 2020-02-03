@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
 using PracticeAPI.DLL.Data;
 
-namespace PracticeAPI.DLL
+namespace PracticeAPI.DLL.Models
 {
     public class PrepDB
     {
@@ -23,18 +23,18 @@ namespace PracticeAPI.DLL
         {
             System.Console.WriteLine("Appling Migrations.....");
 
-            context.Database.Migrate();
+            // context.Database.Migrate();
 
             if (!context.Department.Any())
             {
                 System.Console.WriteLine("Seeding Data.......");
 
                 context.Department.AddRange(
-                    new PracticeAPI.DLL.Models.Department() { DepartmentName = "Administrator" },
-                    new PracticeAPI.DLL.Models.Department() { DepartmentName = "Management" },
-                    new PracticeAPI.DLL.Models.Department() { DepartmentName = "Development" },
-                    new PracticeAPI.DLL.Models.Department() { DepartmentName = "Designing" },
-                    new PracticeAPI.DLL.Models.Department() { DepartmentName = "Testing" }
+                    new Department() { DepartmentName = "Administrator" },
+                    new Department() { DepartmentName = "Management" },
+                    new Department() { DepartmentName = "Development" },
+                    new Department() { DepartmentName = "Designing" },
+                    new Department() { DepartmentName = "Testing" }
                 );
 
             }

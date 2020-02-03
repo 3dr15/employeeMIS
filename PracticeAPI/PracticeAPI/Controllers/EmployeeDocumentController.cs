@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
-using PracticeAPI.Models;
 using Microsoft.AspNetCore.Cors;
+using PracticeAPI.DLL.Data;
 
 namespace PracticeAPI.Controllers
 {

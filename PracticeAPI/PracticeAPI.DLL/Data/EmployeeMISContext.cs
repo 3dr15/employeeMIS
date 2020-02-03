@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using PracticeAPI.DLL.Models;
 
 namespace PracticeAPI.DLL.Data
 {
@@ -13,7 +14,7 @@ namespace PracticeAPI.DLL.Data
         {
         }
         
-        public DbSet<PracticeAPI.DLL.Models.Employee> Employee { get; set; }
-        public DbSet<PracticeAPI.DLL.Models.Department> Department { get; set; }
+        public DbSet<Employee> Employee { get; set; }
+        public DbSet<Department> Department { get; set; }
     }
 }

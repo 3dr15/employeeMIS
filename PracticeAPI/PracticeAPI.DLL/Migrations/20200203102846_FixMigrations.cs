@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace PracticeAPI.Migrations
+namespace PracticeAPI.DLL.Migrations
 {
-    public partial class RefrenceFixedMigration : Migration
+    public partial class FixMigrations : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

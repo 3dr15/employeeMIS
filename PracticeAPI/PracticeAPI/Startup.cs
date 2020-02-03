@@ -1,18 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
-using PracticeAPI.Models;
-using Microsoft.Extensions.Options;
+using PracticeAPI.DLL.Data;
+using PracticeAPI.DLL.Classes;
+using PracticeAPI.DLL.Interfaces;
+using AutoMapper;
+using PracticeAPI.Helper;
 
 namespace PracticeAPI
 {
@@ -29,8 +25,6 @@ namespace PracticeAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // To allow Cors          
-
             /*
             if(Configuration["Server"] == null)
             {
@@ -54,7 +48,12 @@ namespace PracticeAPI
                         options.UseSqlServer(Configuration.GetConnectionString("EmployeeMISContext")));    // Uncomment Me
 
 
+            // Dependency Injections
+            services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+            services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+
             services.AddControllers();
+            services.AddMvc(opt => opt.EnableEndpointRouting=false);
             /*
              To solve Object cycle in JSON refered this link
              https://github.com/dotnet/corefx/issues/41288#issuecomment-534648397
@@ -75,7 +74,7 @@ namespace PracticeAPI
                         .AllowAnyMethod()
                 );
             });
-
+            services.AddAutoMapper(typeof(AutoMapping));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -86,7 +85,6 @@ namespace PracticeAPI
                 app.UseDeveloperExceptionPage();
             }
 
-            
             app.UseHttpsRedirection();
 
             app.UseRouting();
@@ -94,6 +92,7 @@ namespace PracticeAPI
             app.UseCors(MyAllowSpecificOrigins); // This should be called only after useRouting() and before UseAuthentication()
 
             app.UseAuthorization();
+            app.UseMvc();
 
             app.UseEndpoints(endpoints =>
             {
