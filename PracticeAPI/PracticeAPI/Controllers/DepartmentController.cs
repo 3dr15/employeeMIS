@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Cors;
-using PracticeAPI.DLL.Classes;
-using PracticeAPI.DLL.Interfaces;
+using PracticeAPI.Helper.Interfaces;
+using PracticeAPI.Helper.Models;
 
 namespace PracticeAPI.Controllers
 {
@@ -16,25 +12,23 @@ namespace PracticeAPI.Controllers
     [ApiController]
     public class DepartmentController : ControllerBase
     {
-        private IDepartmentRepository _departmentRepository;
+        private IDepartmentTask _departmentTask;
 
-        public DepartmentController(IDepartmentRepository departmentRepository)
+        public DepartmentController(IDepartmentTask departmentTask)
         {
-            _departmentRepository = departmentRepository;
+            _departmentTask = departmentTask;
         }
                 
         [HttpGet]
-        public ActionResult<IEnumerable<DepartmentView>> GetDepartment()
+        public ActionResult<IEnumerable<Department>> GetDepartment()
         {
-            return _departmentRepository.GetDepartments().ToList();
+            return _departmentTask.Departments.ToList();
         }
 
         [HttpGet("{id}")]
         public IActionResult GetDepartment(int id)
         {
-            /*var department = await _context.Department.FindAsync(id);*/
-            // var department = _context.Department.Find(id);
-            var department = _departmentRepository.GetDepartment(id);
+            var department = _departmentTask.GetDepartment(id);
             if (department == null)
             {
                 return NotFound();
@@ -44,19 +38,18 @@ namespace PracticeAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult PutDepartment(int id, DepartmentView department)
+        public IActionResult PutDepartment(int id, Department department)
         {
             if (id != department.DepartmentID)
             {
                 return BadRequest();
             }
-            var updatedDepartment = _departmentRepository.UpdateDepartment(id, department);
+            var updatedDepartment = _departmentTask.UpdateDepartment(id, department);
             if (updatedDepartment == null)
             {
                 return NotFound();
             }
             
-            // return NoContent();
             return Ok(updatedDepartment);
         }
 
@@ -85,9 +78,9 @@ namespace PracticeAPI.Controllers
         */
 
         [HttpPost]
-        public IActionResult PostDepartment(DepartmentView department)
+        public IActionResult PostDepartment(Department department)
         {
-            var createdDepartment = _departmentRepository.CreateDepartment(department);
+            var createdDepartment = _departmentTask.CreateDepartment(department);
             
             if (createdDepartment == null)
             {
@@ -100,7 +93,7 @@ namespace PracticeAPI.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeleteDepartment(int id)
         {
-            var department = _departmentRepository.DeleteDepartment(id);
+            var department = _departmentTask.DeleteDepartment(id);
             if (department == null)
             {
                 return NotFound();

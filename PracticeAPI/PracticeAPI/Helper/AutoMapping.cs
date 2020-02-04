@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using PracticeAPI.DLL.Models;
-using PracticeAPI.DLL.Classes;
 
 namespace PracticeAPI.Helper
 {
@@ -8,8 +6,12 @@ namespace PracticeAPI.Helper
     {
         public AutoMapping()
         {
-            CreateMap<Employee, EmployeeView>();
-            CreateMap<Department, DepartmentView>();
+            CreateMap<PracticeAPI.Helper.Models.Employee,   PracticeAPI.BLL.Models.Employee>().ReverseMap();
+            CreateMap<PracticeAPI.Helper.Models.Department, PracticeAPI.BLL.Models.Department>().ReverseMap();
+            CreateMap<PracticeAPI.Helper.Models.Pagination, PracticeAPI.BLL.Models.Pagination>().ReverseMap();
+            CreateMap<PracticeAPI.BLL.Models.Employee,   PracticeAPI.DLL.Models.Employee> ().ReverseMap();
+            CreateMap<PracticeAPI.BLL.Models.Department, PracticeAPI.DLL.Models.Department> ().ReverseMap();
+            CreateMap<PracticeAPI.BLL.Models.Pagination, PracticeAPI.DLL.Models.Pagination>().ReverseMap();
         }
     }
 }

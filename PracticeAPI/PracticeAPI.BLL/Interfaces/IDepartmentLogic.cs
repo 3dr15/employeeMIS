@@ -1,10 +1,10 @@
-﻿using PracticeAPI.DLL.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using PracticeAPI.BLL.Models;
 
-namespace PracticeAPI.DLL.Interfaces
+namespace PracticeAPI.BLL.Interfaces
 {
-    public interface IDepartmentRepository
+    public interface IDepartmentLogic
     {
         IEnumerable<Department> GetDepartments();
         Department GetDepartment(Int64 id);

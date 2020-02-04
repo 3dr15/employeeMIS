@@ -3,7 +3,6 @@ using PracticeAPI.DLL.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using PracticeAPI.DLL.Models;
 using AutoMapper;
@@ -13,35 +12,36 @@ namespace PracticeAPI.DLL.Classes
     public class EmployeeRepository : IEmployeeRepository
     {
         private readonly EmployeeMISContext _context;
-        private readonly IMapper _mapper;
+        // private readonly IMapper _mapper;
         public EmployeeRepository(EmployeeMISContext context, IMapper mapper)
         {
             _context = context;
-            _mapper = mapper;
+            // _mapper = mapper;
         }
         public int GetEmployeeCount()
         {
             int count = _context.Employee.ToList().Count();
             double numberOfPages = count / 10.0;
 
-            return (int)Math.Round(numberOfPages, 0, MidpointRounding.AwayFromZero);
+            return (int)Math.Ceiling(numberOfPages);
+            // return (int)Math.Round(numberOfPages, 0, MidpointRounding.AwayFromZero);
         }
-        public IEnumerable<EmployeeView> GetEmployees(Pagination pagination)
+        public IEnumerable<Employee> GetEmployees(Pagination pagination)
         {
             var employees = _context.Employee.Include(employee => employee.Department)
                 .Skip((pagination.PageNumber - 1) * pagination.PageSize)
                 .Take(pagination.PageSize)
                 .ToListAsync().Result;
-            var employeesList = _mapper.Map<IList<EmployeeView>>(employees);
-            return employeesList;
+            // var employeesList = _mapper.Map<IList<Employee>>(employees);
+            return employees;
         }
-        public EmployeeView GetEmployee(Int64 id)
+        public Employee GetEmployee(Int64 id)
         {
             var employee = _context.Employee.Include(employee => employee.Department)
                 .FirstOrDefaultAsync(employee => employee.EmployeeID == id).Result;
-            return _mapper.Map<EmployeeView>(employee);
+            return employee;
         }
-        public IEnumerable<EmployeeView> FindEmployees(string searchString)
+        public IEnumerable<Employee> FindEmployees(string searchString)
         {
             var emp = from employees in _context.Employee.Include(employee => employee.Department) select employees;
 
@@ -54,14 +54,14 @@ namespace PracticeAPI.DLL.Classes
                     return null;
                 }
 
-                return _mapper.Map<IEnumerable<EmployeeView>>(employees.ToList());
+                return employees;
             }
             else
             {
                 return null;
             }
         }
-        public EmployeeView UpdateEmployee(Int64 id, EmployeeView employee)
+        public Employee UpdateEmployee(Int64 id, Employee employee)
         {
             employee.DocProofLink = this.FileUpload(employee.DocProofLink);
             _context.Entry(employee).State = EntityState.Modified;
@@ -84,23 +84,23 @@ namespace PracticeAPI.DLL.Classes
             // return NoContent();
             return employee;
         }
-        public EmployeeView CreateEmployee(EmployeeView employee)
+        public Employee CreateEmployee(Employee employee)
         {
             try
             {
                 employee.DocProofLink = this.FileUpload(employee.DocProofLink);
-                var newEmployee = _context.Employee.Add(_mapper.Map<Employee>(employee));
+                _context.Employee.Add(employee);
                 _context.SaveChangesAsync();
-                return _mapper.Map<EmployeeView>(newEmployee);
+                return employee;
             }
             catch (Exception)
             {
                 return null;
             }
         }
-        public EmployeeView DeleteEmployee(Int64 id)
+        public Employee DeleteEmployee(Int64 id)
         {
-            var employee = _context.Employee.FindAsync(id).Result;
+            var employee = _context.Employee.Find(id);
             if (!EmployeeExists(id))
             {
                 return null;
@@ -108,7 +108,7 @@ namespace PracticeAPI.DLL.Classes
             _context.Employee.Remove(employee);
             _context.SaveChangesAsync();
 
-            return _mapper.Map<EmployeeView>(employee);
+            return employee;
         }
         private bool EmployeeExists(long id)
         {
@@ -118,7 +118,10 @@ namespace PracticeAPI.DLL.Classes
         {
             // string storage = Environment.CurrentDirectory;
             string storage = AppDomain.CurrentDomain.BaseDirectory + "\\Document_Storage";
-
+            if (!System.IO.Directory.Exists(path: storage))
+            {
+                System.IO.Directory.CreateDirectory(storage);
+            }
 
             Guid docName = Guid.NewGuid();
 

@@ -9,6 +9,10 @@ using PracticeAPI.DLL.Classes;
 using PracticeAPI.DLL.Interfaces;
 using AutoMapper;
 using PracticeAPI.Helper;
+using PracticeAPI.Helper.Interfaces;
+using PracticeAPI.Helper.TaskHandler;
+using PracticeAPI.BLL.Interfaces;
+using PracticeAPI.BLL.Logics;
 
 namespace PracticeAPI
 {
@@ -44,13 +48,22 @@ namespace PracticeAPI
             }
             */
 
+            // Dependency Injections
+            // For DB Context            
             services.AddDbContext<EmployeeMISContext>(options =>
                         options.UseSqlServer(Configuration.GetConnectionString("EmployeeMISContext")));    // Uncomment Me
+            
+            // FOR CONTROLLERS
+            services.AddScoped<IDepartmentTask, DepartmentTask>();
+            services.AddScoped<IEmployeeTask, EmployeeTask>();
 
-
-            // Dependency Injections
+            // FOR TASKS
             services.AddScoped<IDepartmentRepository, DepartmentRepository>();
             services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+
+            // FOR LOGIC
+            services.AddScoped<IDepartmentLogic, DepartmentLogic>();
+            services.AddScoped<IEmployeeLogic, EmployeeLogic>();
 
             services.AddControllers();
             services.AddMvc(opt => opt.EnableEndpointRouting=false);

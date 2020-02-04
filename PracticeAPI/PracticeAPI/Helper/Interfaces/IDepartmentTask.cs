@@ -1,12 +1,13 @@
-﻿using PracticeAPI.DLL.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using PracticeAPI.Helper.Models;
 
-namespace PracticeAPI.DLL.Interfaces
+namespace PracticeAPI.Helper.Interfaces
 {
-    public interface IDepartmentRepository
+    public interface IDepartmentTask
     {
-        IEnumerable<Department> GetDepartments();
+        IEnumerable<Department> Departments { get; }
+
         Department GetDepartment(Int64 id);
         Department UpdateDepartment(Int64 id, Department department);
         Department CreateDepartment(Department department);

@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using PracticeAPI.DLL.Classes;
-using PracticeAPI.DLL.Data;
 using Microsoft.AspNetCore.Cors;
-using PracticeAPI.DLL.Interfaces;
+using PracticeAPI.Helper.Interfaces;
+using PracticeAPI.Helper.Models;
 
 namespace PracticeAPI.Controllers
 {
@@ -15,34 +12,23 @@ namespace PracticeAPI.Controllers
     [ApiController]
     public class EmployeeController : ControllerBase
     {
-        private readonly IEmployeeRepository _employeeRepository;
+        private readonly IEmployeeTask _employeeTask;
 
-        public EmployeeController(IEmployeeRepository employeeRepository)
+        public EmployeeController(IEmployeeTask employeeTask)
         {
-            _employeeRepository = employeeRepository;
+            _employeeTask = employeeTask;
         }
 
         [EnableCorsAttribute("_myAllowSpecificOrigins")]
         [HttpGet]
-        public ActionResult<IEnumerable<EmployeeView>> GetEmployee([FromQuery]Pagination pagination)
-        {
-            //return await _context.Employee.ToListAsync();
-            //return await _context.Employee.Include(employee => employee.Department).ToListAsync().ConfigureAwait(true);
-
-            // Working 
-            // return _context.Employee.Include(employee => employee.Department).ToListAsync().Result;
-            
-            // var employees = from emp in _context.Employee select emp;
-
-            var employees = _employeeRepository.GetEmployees(pagination);
-            return Ok(employees);
-        }
+        public ActionResult<IEnumerable<Employee>> GetEmployee([FromQuery]Pagination pagination) => Ok(_employeeTask.GetEmployees(pagination));
+        
 
         [HttpGet("{id}")]
         public IActionResult GetEmployee(long id)
         {
             /*var employee = await _context.Employee.FindAsync(id);*/
-            var employee = _employeeRepository.GetEmployee(id);
+            var employee = _employeeTask.GetEmployee(id);
 
             if (employee == null)
             {
@@ -57,7 +43,7 @@ namespace PracticeAPI.Controllers
         {
             if (!string.IsNullOrEmpty(searchString))
             {
-                var employees = _employeeRepository.FindEmployees(searchString);
+                var employees = _employeeTask.FindEmployees(searchString);
 
                 if (employees == null)
                 {
@@ -75,26 +61,26 @@ namespace PracticeAPI.Controllers
         [HttpGet("count")]
         public int GetEmployeesPerPageCount()
         {
-            return _employeeRepository.GetEmployeeCount();
+            return _employeeTask.GetEmployeeCount();
         }
 
         [HttpPut("{id}")]
-        public IActionResult PutEmployee(long id, EmployeeView employee)
+        public IActionResult PutEmployee(long id, Employee employee)
         {
             if (id != employee.EmployeeID)
             {
                 return BadRequest();
             }
 
-            var updatedEmployee = _employeeRepository.UpdateEmployee(id, employee);
+            var updatedEmployee = _employeeTask.UpdateEmployee(id, employee);
 
             return Ok(updatedEmployee);
         }
 
         [HttpPost]
-        public ActionResult<EmployeeView> PostEmployee(EmployeeView employee)
+        public ActionResult<Employee> PostEmployee(Employee employee)
         {
-            var newEmployee = _employeeRepository.CreateEmployee(employee);
+            var newEmployee = _employeeTask.CreateEmployee(employee);
             if(newEmployee == null)
             {
                 return NoContent();
@@ -103,10 +89,9 @@ namespace PracticeAPI.Controllers
         }
 
         [HttpDelete("{id}")]
-        public ActionResult<EmployeeView> DeleteEmployee(long id)
+        public ActionResult<Employee> DeleteEmployee(long id)
         {
-            var employee = _employeeRepository.DeleteEmployee(id);
-
+            var employee = _employeeTask.DeleteEmployee(id);
             return Ok(employee);
         }
     }

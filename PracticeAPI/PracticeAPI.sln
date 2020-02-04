@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.29326.143
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PracticeAPI", "PracticeAPI\PracticeAPI.csproj", "{A3240E5C-F8DD-4219-A7E4-52A8AE696B69}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PracticeAPI.DLL", "PracticeAPI.DLL\PracticeAPI.DLL.csproj", "{3E9AF2F7-22A1-4781-B412-BADB9B23D6A6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PracticeAPI.DLL", "PracticeAPI.DLL\PracticeAPI.DLL.csproj", "{3E9AF2F7-22A1-4781-B412-BADB9B23D6A6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PracticeAPI.BLL", "PracticeAPI.BLL\PracticeAPI.BLL.csproj", "{D644D15A-A4AE-4835-885E-6C6A5A90B240}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{3E9AF2F7-22A1-4781-B412-BADB9B23D6A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3E9AF2F7-22A1-4781-B412-BADB9B23D6A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3E9AF2F7-22A1-4781-B412-BADB9B23D6A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D644D15A-A4AE-4835-885E-6C6A5A90B240}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D644D15A-A4AE-4835-885E-6C6A5A90B240}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D644D15A-A4AE-4835-885E-6C6A5A90B240}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D644D15A-A4AE-4835-885E-6C6A5A90B240}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\PracticeAPI.BLL\PracticeAPI.BLL.csproj" />
     <ProjectReference Include="..\PracticeAPI.DLL\PracticeAPI.DLL.csproj" />
   </ItemGroup>
 

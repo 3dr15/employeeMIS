@@ -6,27 +6,26 @@ using PracticeAPI.DLL.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace PracticeAPI.DLL.Classes
 {
     public class DepartmentRepository : IDepartmentRepository
     {
         private EmployeeMISContext _context;
-        private readonly IMapper _IMapper;
+        // private readonly IMapper _IMapper;
         public DepartmentRepository(EmployeeMISContext context, IMapper mapper)
         {
             _context = context;
-            _IMapper = mapper;
+            // _IMapper = mapper;
         }
 
-        public IEnumerable<DepartmentView> GetDepartments()
+        public IEnumerable<Department> GetDepartments()
         {
             var departments = _context.Department.ToList();
-            var departmentList = _IMapper.Map<List<DepartmentView>>(departments);
-            return departmentList;
+            // var departmentList = _IMapper.Map<List<Department>>(departments);
+            return departments;
         }
-        public DepartmentView GetDepartment(Int64 id)
+        public Department GetDepartment(Int64 id)
         {
             var departmentT = _context.Department.Include(department => department.Employees)
                 .FirstOrDefault(department => department.DepartmentID == id);
@@ -34,10 +33,10 @@ namespace PracticeAPI.DLL.Classes
             {
                 return null;
             }
-            var dep = _IMapper.Map<DepartmentView>(departmentT);
-            return dep;
+            // var dep = _IMapper.Map<Department>(departmentT);
+            return departmentT;
         }
-        public DepartmentView UpdateDepartment(Int64 id, DepartmentView department) // There is no Auto Mapping can be acception
+        public Department UpdateDepartment(Int64 id, Department department) // There is no Auto Mapping can be acception
         {
             // _context.Entry(_IMapper.Map<Department>(department)).State = EntityState.Modified;
 
@@ -58,21 +57,21 @@ namespace PracticeAPI.DLL.Classes
             }
             return department;
         }
-        public DepartmentView CreateDepartment(DepartmentView departmentView)
+        public Department CreateDepartment(Department department)
         {
             try
             {
-                var department = _IMapper.Map<Department>(departmentView);
+                //var department = _IMapper.Map<Department>(department);
                 _context.Department.Add(department);
                 _context.SaveChangesAsync();
-                return _IMapper.Map<DepartmentView>(department);
+                return department;
             }
             catch(Exception)
             {
                 return null;
             }
         }
-        public DepartmentView DeleteDepartment(int id)
+        public Department DeleteDepartment(int id)
         {
             if (!DepartmentExists(id))
             {
@@ -82,7 +81,7 @@ namespace PracticeAPI.DLL.Classes
             var department = _context.Department.FindAsync(id);
             _context.Department.Remove(department.Result);
             _context.SaveChangesAsync();
-            return _IMapper.Map<DepartmentView>(department);
+            return department.Result;
         }
         private bool DepartmentExists(Int64 id)
         {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace PracticeAPI.DLL.Models
+namespace PracticeAPI.BLL.Models
 {
     public class Department
     {
