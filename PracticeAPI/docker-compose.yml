@@ -1,0 +1,21 @@
+version: '3'
+services: 
+    ms-sql-server:
+        image: mcr.microsoft.com/mssql/server:2017-latest-ubuntu
+        environment: 
+            ACCEPT_EULA: "Y"
+            SA_PASSWORD: "admin@5418919"
+            MSSQL_PID: Express
+        ports: 
+            - "1433:1433"
+    emp-mis-api:
+        build: .
+        environment: 
+            Prod: "Y"
+            SqlServer: "ms-sql-server"
+            SqlPort: 1433
+            SqlUser: "sa"
+            SqlPassword: "admin@5418919"
+            SqlDatabase: "EmployeeMIS"
+        ports: 
+            - "8880:80"

@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -13,6 +14,7 @@ using PracticeAPI.Helper.Interfaces;
 using PracticeAPI.Helper.TaskHandler;
 using PracticeAPI.BLL.Interfaces;
 using PracticeAPI.BLL.Logics;
+using PracticeAPI.DLL.Models;
 
 namespace PracticeAPI
 {
@@ -49,10 +51,29 @@ namespace PracticeAPI
             */
 
             // Dependency Injections
-            // For DB Context            
-            services.AddDbContext<EmployeeMISContext>(options =>
-                        options.UseSqlServer(Configuration.GetConnectionString("EmployeeMISContext")));    // Uncomment Me
-            
+            // For DB Context
+
+            if(Environment.GetEnvironmentVariable("Prod") != null && (Environment.GetEnvironmentVariable("Prod") == "Y" || Environment.GetEnvironmentVariable("Prod") == "y"))
+            {
+                string server = Configuration["SqlServer"] ?? "localhost";
+                string port = Configuration["SqlPort"] ?? "1443";
+                string user = Configuration["SqlUser"] ?? "sa";
+                string password = Configuration["SqlPassword"] ?? "admin@5418919";
+                string database = Configuration["SqlDatabase"] ?? "EmployeeMIS";
+                string conn = $"Server={ server },{ port };Initial Catalog={ database };User ID={ user };Password={ password }";
+
+                services.AddDbContext<EmployeeMISContext>(options =>
+                            options.UseSqlServer(conn));
+
+            }
+            else
+            {
+                services.AddDbContext<EmployeeMISContext>(options => 
+                            options.UseSqlServer(Configuration.GetConnectionString("EmployeeMISContext")));
+            }
+
+
+
             // FOR CONTROLLERS
             services.AddScoped<IDepartmentTask, DepartmentTask>();
             services.AddScoped<IEmployeeTask, EmployeeTask>();
@@ -82,7 +103,8 @@ namespace PracticeAPI
             services.AddCors(opt =>
             {
                 opt.AddPolicy(MyAllowSpecificOrigins, builder =>
-                    builder.WithOrigins("http://localhost:4200", "http://localhost:8888")
+                    builder.AllowAnyOrigin()
+                        //.WithOrigins("http://localhost:4200", "http://localhost:8888", "http://localhost")
                         .AllowAnyHeader()
                         .AllowAnyMethod()
                 );
@@ -112,8 +134,10 @@ namespace PracticeAPI
                 endpoints.MapControllers().RequireCors(MyAllowSpecificOrigins);
                 // endpoints.MapControllers();
             });
-
-            // PrepDB.PrepPopulation(app); // Comment This
+            if (Environment.GetEnvironmentVariable("Prod") != null && (Environment.GetEnvironmentVariable("Prod") == "Y" || Environment.GetEnvironmentVariable("Prod") == "y"))
+            {
+                PrepDB.PrepPopulation(app);
+            }
         }
     }
 }

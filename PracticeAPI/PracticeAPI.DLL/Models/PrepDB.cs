@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
 using PracticeAPI.DLL.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace PracticeAPI.DLL.Models
 {
@@ -19,7 +20,7 @@ namespace PracticeAPI.DLL.Models
         {
             System.Console.WriteLine("Appling Migrations.....");
 
-            // context.Database.Migrate();
+            context.Database.Migrate();
 
             if (!context.Department.Any())
             {
@@ -32,7 +33,7 @@ namespace PracticeAPI.DLL.Models
                     new Department() { DepartmentName = "Designing" },
                     new Department() { DepartmentName = "Testing" }
                 );
-
+                context.SaveChanges();
             }
             else
             {

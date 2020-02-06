@@ -1,18 +1,16 @@
-FROM mcr.microsoft.com/dotnet/core/sdk:3.0 AS build
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build-env
 WORKDIR /app
 
-# copy csproj and restore as distinct layers
-COPY *.sln .
-COPY PracticeAPI/*.csproj ./PracticeAPI/
-RUN dotnet restore
+# COPY /PracticeAPI/*.csproj ./
+# COPY /PracticeAPI.BLL/*.csproj ./
+# COPY /PracticeAPI.DLL/*.csproj ./
 
-# copy everything else and build app
-COPY PracticeAPI/. ./PracticeAPI/
-WORKDIR /app/PracticeAPI
+COPY . ./
+RUN dotnet restore
 RUN dotnet publish -c Release -o out
 
-
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.0 AS runtime
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
 WORKDIR /app
-COPY --from=build /app/PracticeAPI/out ./
+EXPOSE 80
+COPY --from=build-env /app/out .
 ENTRYPOINT ["dotnet", "PracticeAPI.dll"]

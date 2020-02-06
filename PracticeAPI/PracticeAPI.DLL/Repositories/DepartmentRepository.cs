@@ -38,8 +38,7 @@ namespace PracticeAPI.DLL.Classes
         }
         public Department UpdateDepartment(Int64 id, Department department) // There is no Auto Mapping can be acception
         {
-            // _context.Entry(_IMapper.Map<Department>(department)).State = EntityState.Modified;
-
+            _context.Entry(department).State = EntityState.Modified;
             try
             {
                 _context.SaveChangesAsync();
@@ -61,7 +60,6 @@ namespace PracticeAPI.DLL.Classes
         {
             try
             {
-                //var department = _IMapper.Map<Department>(department);
                 _context.Department.Add(department);
                 _context.SaveChangesAsync();
                 return department;
